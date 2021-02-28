@@ -9,5 +9,6 @@ defmodule Awatcher.Repo.Migrations.CreateTopics do
       timestamps()
     end
 
+    create unique_index(:topics, [:name])
   end
 end

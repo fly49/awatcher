@@ -14,5 +14,6 @@ defmodule Awatcher.Records.Topic do
     topic
     |> cast(attrs, [:name, :description])
     |> validate_required([:name, :description])
+    |> unique_constraint(:name)
   end
 end
