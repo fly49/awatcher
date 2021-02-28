@@ -28,7 +28,7 @@ defmodule Awatcher.Records do
     library
     |> Library.changeset(attrs)
     |> Ecto.Changeset.put_assoc(:topic, topic)
-    |> Repo.insert()
+    |> Repo.insert_or_update()
   end
 
   def create_topic(%Topic{} = topic \\ %Topic{}, attrs) do
