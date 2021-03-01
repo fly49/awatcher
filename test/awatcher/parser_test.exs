@@ -39,7 +39,7 @@ defmodule Awatcher.ParserTest do
   describe "parse_line()" do
     test "detect groups and parse them to map" do
       data = "* [bpe](https://github.com/spawnproc/bpe) - Business Process Engine in Erlang."
-      valid_data = %{name: "bpe", url: "https://github.com/spawnproc/bpe", description: "Business Process Engine in Erlang."}
+      valid_data = %{name: "bpe", url: "spawnproc/bpe", description: "Business Process Engine in Erlang."}
 
       assert Parser.parse_line(data) == valid_data
     end
@@ -64,8 +64,8 @@ defmodule Awatcher.ParserTest do
         topic: "Audio and Sounds",
         topic_desc: "Libraries working with sounds and tones.",
         libraries: [
-          %{name: "erlaudio", url: "https://github.com/asonge/erlaudio", description: "Erlang PortAudio bindings."},
-          %{name: "firmata", url: "https://github.com/entone/firmata", description: "This package implements the Firmata protocol."}
+          %{name: "erlaudio", url: "asonge/erlaudio", description: "Erlang PortAudio bindings."},
+          %{name: "firmata", url: "entone/firmata", description: "This package implements the Firmata protocol."}
         ]
       }
 

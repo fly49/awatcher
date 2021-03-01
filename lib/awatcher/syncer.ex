@@ -15,12 +15,12 @@ defmodule Awatcher.Syncer do
     Process.send_after(self(), :sync, interval)
   end
 
-  @url "https://raw.githubusercontent.com/h4cc/awesome-elixir/master/README.md"
-  def handle_info(:sync, state) do
-    @url
-      |> Downloader.download()
-      |> Parser.parse()
-      |> Awatcher.Records.create_records()
-    {:noreply, state}
-  end
+  # @url "https://raw.githubusercontent.com/h4cc/awesome-elixir/master/README.md"
+  # def handle_info(:sync, state) do
+  #   @url
+  #     |> Downloader.download()
+  #     |> Parser.parse()
+  #     |> Awatcher.Records.create_records()
+  #   {:noreply, state}
+  # end
 end

@@ -23,8 +23,9 @@ defmodule Awatcher.Parser do
 
   def parse_line(line) do
     case Regex.run(~r/\[(.+?)\]\((.+?)\)\s-\s(.+?)$/, line) do
-      [_match, name, url, desc] ->
-        %{ name: name, url: url, description: desc }
+      [_match, name, full_url, desc] ->
+        [_, parsed_url] = Regex.run(~r/([^\/]+\/[^\/]+)$/, full_url)
+        %{ name: name, url: parsed_url, description: desc }
       _ -> nil
     end
   end
