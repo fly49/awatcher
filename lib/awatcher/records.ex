@@ -22,6 +22,7 @@ defmodule Awatcher.Records do
           |> create_library(topic, map)
       end)
     end)
+    {:ok, :created}
   end
 
   def create_library(%Library{} = library \\ %Library{}, %Topic{} = topic, attrs) do
@@ -43,5 +44,14 @@ defmodule Awatcher.Records do
 
   def list_libraries do
     Repo.all(Library)
+  end
+
+  def get_topic_by(params) do
+    Repo.get_by(Topic, params)
+  end
+
+  def get_library_by(params) do
+    Repo.get_by(Library, params)
+    |> Repo.preload(:topic)
   end
 end
