@@ -12,27 +12,27 @@ defmodule Awatcher.Records do
 
       {:ok, topic} =
         Enum.find(existed_topics, %Topic{}, &(&1.name == topic_name))
-        |> create_topic(%{name: topic_name, description: topic_desc})
+        |> create_or_update_topic(%{name: topic_name, description: topic_desc})
 
       Enum.each(libraries, fn(map) ->
         %{ name: name, url: _, description: _ } = map
 
         {:ok, _} =
           Enum.find(existed_libs, %Library{}, &(&1.name == name))
-          |> create_library(topic, map)
+          |> create_or_update_library(topic, map)
       end)
     end)
     {:ok, :created}
   end
 
-  def create_library(%Library{} = library \\ %Library{}, %Topic{} = topic, attrs) do
+  def create_or_update_library(%Library{} = library \\ %Library{}, %Topic{} = topic, attrs) do
     library
     |> Library.changeset(attrs)
     |> Ecto.Changeset.put_assoc(:topic, topic)
     |> Repo.insert_or_update()
   end
 
-  def create_topic(%Topic{} = topic \\ %Topic{}, attrs) do
+  def create_or_update_topic(%Topic{} = topic \\ %Topic{}, attrs) do
     topic
     |> Topic.changeset(attrs)
     |> Repo.insert_or_update()
