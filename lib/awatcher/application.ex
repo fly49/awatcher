@@ -15,7 +15,7 @@ defmodule Awatcher.Application do
       {Phoenix.PubSub, name: Awatcher.PubSub},
       # Start the Endpoint (http/https)
       AwatcherWeb.Endpoint,
-      {Awatcher.Syncer, :timer.hours(6)}
+      # {Awatcher.Syncer, :timer.hours(6)}
       # Start a worker by calling: Awatcher.Worker.start_link(arg)
       # {Awatcher.Worker, arg}
     ]

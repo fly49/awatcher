@@ -4,38 +4,32 @@ defmodule Awatcher.Records do
   alias Awatcher.Records.Library
   alias Awatcher.Records.Topic
 
-  def create_records(list_of_maps) do
-    existed_topics = list_topics()
-    existed_libs = list_libraries()
-    Enum.each(list_of_maps, fn(map) ->
-      %{topic: topic_name, topic_desc: topic_desc, libraries: libraries} = map
-
-      {:ok, topic} =
-        Enum.find(existed_topics, %Topic{}, &(&1.name == topic_name))
-        |> create_or_update_topic(%{name: topic_name, description: topic_desc})
-
-      Enum.each(libraries, fn(map) ->
-        %{ name: name, url: _, description: _ } = map
-
-        {:ok, _} =
-          Enum.find(existed_libs, %Library{}, &(&1.name == name))
-          |> create_or_update_library(topic, map)
-      end)
-    end)
-    {:ok, :created}
-  end
-
-  def create_or_update_library(%Library{} = library \\ %Library{}, %Topic{} = topic, attrs) do
-    library
+  def create_library(%Topic{} = topic, attrs) do
+    %Library{}
     |> Library.changeset(attrs)
     |> Ecto.Changeset.put_assoc(:topic, topic)
-    |> Repo.insert_or_update()
+    |> Ecto.Changeset.put_change(:present, attrs[:present] || true)
+    |> Repo.insert()
   end
 
-  def create_or_update_topic(%Topic{} = topic \\ %Topic{}, attrs) do
+  def update_library(%Library{} = library, attrs) do
+    library
+    |> Library.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:topic, attrs[:topic])
+    |> Ecto.Changeset.put_change(:present, attrs[:present] || true)
+    |> Repo.update()
+  end
+
+  def create_topic(attrs) do
+    %Topic{}
+    |> Topic.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def update_topic(%Topic{} = topic, attrs) do
     topic
     |> Topic.changeset(attrs)
-    |> Repo.insert_or_update()
+    |> Repo.update()
   end
 
   def list_topics do
@@ -43,7 +37,7 @@ defmodule Awatcher.Records do
   end
 
   def list_libraries do
-    Repo.all(Library)
+    Repo.all(Library) |> Repo.preload(:topic)
   end
 
   def get_topic_by(params) do

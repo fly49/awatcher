@@ -1,117 +1,95 @@
 defmodule Awatcher.RecordsTest do
   use Awatcher.DataCase, async: true
   alias Awatcher.Records
-  alias Awatcher.Records.{Topic, Library}
 
-  describe "create_or_update_topic()" do
+  describe "topics" do
+    alias Awatcher.Records.Topic
     @valid_attrs %{name: "Actors", description: "Libraries and tools for working with actors and such."}
+    @invalid_attrs %{name: nil, description: nil}
 
-    test "with valid data inserts topic" do
-      assert {:ok, %Topic{id: id}=topic} = Records.create_or_update_topic(@valid_attrs)
+    test "list_topics/0 returns all topics" do
+      %Topic{id: id1} = topic_fixture()
+      assert [%Topic{id: ^id1}] = Records.list_topics()
+
+      %Topic{id: id2} = topic_fixture()
+      assert [%Topic{id: ^id1}, %Topic{id: ^id2}] = Records.list_topics()
+    end
+
+    test "create_topic/1 returns the topic with given id" do
+      assert {:ok, %Topic{} = topic} = Records.create_topic(@valid_attrs)
+
       assert topic.name == @valid_attrs.name
       assert topic.description == @valid_attrs.description
-      assert [%Topic{id: ^id}] = Records.list_topics()
     end
 
-    test "with provided topic updates one" do
-      {:ok, old_topic} = Records.create_or_update_topic(@valid_attrs)
-
-      assert {:ok, new_topic} = Records.create_or_update_topic(old_topic, %{name: "Actors", description: "Description"})
-      assert new_topic.name == "Actors"
-      assert new_topic.description == "Description"
-      assert new_topic.id == old_topic.id
-    end
-  end
-
-  describe "create_or_update_library()" do
-    @valid_attrs %{name: "lib_name", url: "url", description: "desc"}
-
-    test "with valid data inserts library" do
-      {:ok, topic} = Records.create_or_update_topic(%{name: "Actors", description: "Description"})
-
-      assert {:ok, %Library{id: id}=lib} = Records.create_or_update_library(topic, @valid_attrs)
-      assert lib.name == @valid_attrs.name
-      assert lib.description == @valid_attrs.description
-      assert lib.topic == topic
-      assert [%Library{id: ^id}] = Records.list_libraries()
+    test "create_topic/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Records.create_topic(@invalid_attrs)
     end
 
-    test "with provided library updates one" do
-      {:ok, topic} = Records.create_or_update_topic(%{name: "Actors", description: "Description"})
-      {:ok, new_topic} = Records.create_or_update_topic(%{name: "XML", description: "xml"})
-      {:ok, old_lib} = Records.create_or_update_library(topic, @valid_attrs)
+    test "update_topic/2 with valid data updates the topic" do
+      topic = topic_fixture()
 
-      assert {:ok, %Library{id: id}=new_lib} = Records.create_or_update_library(old_lib, new_topic, %{name: "new_lib_name", url: "another_url", description: "another_desc"})
-      assert new_lib.name == "new_lib_name"
-      assert new_lib.url == "another_url"
-      assert new_lib.description == "another_desc"
-      assert new_lib.topic == new_topic
-      assert [%Library{id: ^id}] = Records.list_libraries()
+      assert {:ok, %Topic{} = topic} = Records.update_topic(topic, %{description: "updated description"})
+      assert topic.description == "updated description"
+    end
+
+    test "update_topic/2 with invalid data returns error changeset" do
+      topic = topic_fixture()
+
+      assert {:error, %Ecto.Changeset{}} = Records.update_topic(topic, @invalid_attrs)
     end
   end
 
-  describe "create_records()" do
-    test "with valid data creates records" do
-      lib_11 = %{
-        description: "An Elixir wrapper for the `redbug` production-friendly Erlang tracing debugger.",
-        name: "rexbug",
-        url: "https://github.com/nietaki/rexbug"
-      }
-      lib_12 = %{
-        description: "A process visualizer for remote BEAM nodes.",
-        name: "visualixir",
-        url: "https://github.com/koudelka/visualixir"
-      }
-      map_1 = %{
-        topic: "Debugging",
-        topic_desc: "Libraries and tools for debugging code and applications.",
-        libraries: [lib_11, lib_12]
-      }
-      lib_21 = %{
-        description: "A fully-featured PaaS designed for Elixir. Supports clustering, hot upgrades, and remote console/observer. Free to try without a credit card.",
-        name: "Gigalixir",
-        url: "https://www.gigalixir.com"
-      }
-      lib_22 = %{
-        description: "Heroku buildpack to deploy Elixir apps to Heroku.",
-        name: "heroku-buildpack-elixir",
-        url: "https://github.com/HashNuke/heroku-buildpack-elixir"
-      }
-      map_2 = %{
-        topic: "Deployment",
-        topic_desc: "Installing and running your code automatically on other machines.",
-        libraries: [lib_21, lib_22]
-      }
+  describe "libraries" do
+    alias Awatcher.Records.Library
+    @valid_attrs %{name: "jason", url: "url", description: "A blazing fast JSON parser and generator in pure Elixir"}
+    @invalid_attrs %{name: nil, url: nil, description: nil}
 
-      assert {:ok, :created} = Records.create_records([map_1, map_2])
+    test "list_libraries/0 returns all libraries with preloaded library" do
+      topic = topic_fixture()
+      %Library{id: id1} = library_fixture(topic)
+      assert [%Library{id: ^id1}] = Records.list_libraries()
 
-      res_lib_11 = Records.get_library_by(name: lib_11.name)
-      assert lib_11.name == res_lib_11.name
-      assert lib_11.url == res_lib_11.url
-      assert lib_11.description == res_lib_11.description
-      assert map_1.topic == res_lib_11.topic.name
-      assert map_1.topic_desc == res_lib_11.topic.description
+      %Library{id: id2} = library_fixture(topic)
+      assert [%Library{id: ^id1}, %Library{id: ^id2}] = Records.list_libraries()
+    end
 
-      res_lib_12 = Records.get_library_by(name: lib_12.name)
-      assert lib_12.name == res_lib_12.name
-      assert lib_12.url == res_lib_12.url
-      assert lib_12.description == res_lib_12.description
-      assert map_1.topic == res_lib_12.topic.name
-      assert map_1.topic_desc == res_lib_12.topic.description
+    test "create_library/2 returns the library with given id" do
+      topic = topic_fixture()
+      assert {:ok, %Library{} = library} = Records.create_library(topic, @valid_attrs)
 
-      res_lib_21 = Records.get_library_by(name: lib_21.name)
-      assert lib_21.name == res_lib_21.name
-      assert lib_21.url == res_lib_21.url
-      assert lib_21.description == res_lib_21.description
-      assert map_2.topic == res_lib_21.topic.name
-      assert map_2.topic_desc == res_lib_21.topic.description
+      assert library.name == @valid_attrs.name
+      assert library.description == @valid_attrs.description
+      assert library.topic == topic
+    end
 
-      res_lib_22 = Records.get_library_by(name: lib_22.name)
-      assert lib_22.name == res_lib_22.name
-      assert lib_22.url == res_lib_22.url
-      assert lib_22.description == res_lib_22.description
-      assert map_2.topic == res_lib_22.topic.name
-      assert map_2.topic_desc == res_lib_22.topic.description
+    test "create_library/2 with invalid data returns error changeset" do
+      topic = topic_fixture()
+      assert {:error, %Ecto.Changeset{}} = Records.create_library(topic, @invalid_attrs)
+    end
+
+    test "update_library/2 with valid data updates the topic" do
+      topic = topic_fixture()
+      library = library_fixture(topic)
+
+      assert {:ok, %Library{} = library} = Records.update_library(library, %{url: "updated url"})
+      assert library.url == "updated url"
+    end
+
+    test "update_library/2 with topic provided updates the association" do
+      topic = topic_fixture()
+      library = library_fixture(topic)
+      new_topic = topic_fixture()
+
+      assert {:ok, %Library{} = library} = Records.update_library(library, %{topic: new_topic})
+      assert library.topic == new_topic
+    end
+
+    test "update_library/2 with invalid data returns error changeset" do
+      topic = topic_fixture()
+      library = library_fixture(topic)
+
+      assert {:error, %Ecto.Changeset{}} = Records.update_library(library, @invalid_attrs)
     end
   end
 end

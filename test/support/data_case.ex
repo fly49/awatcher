@@ -24,6 +24,7 @@ defmodule Awatcher.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import Awatcher.DataCase
+      import Awatcher.TestHelpers
     end
   end
 
