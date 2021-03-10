@@ -1,12 +1,34 @@
-defmodule GitHub do
+defmodule Awatcher.Github do
   use HTTPoison.Base
+  use Retry
+  import Stream
 
   @expected_fields ~w(
     stargazers_count pushed_at
   )
 
+  def fetch_data(url) do
+    retry with: linear_backoff(500, 2) |> take(3) do
+      get!(url) |> handle_response()
+    after
+      response -> response
+    else
+      error -> raise(error)
+    end
+  end
+
+  def handle_response(response) do
+    case response do
+      %HTTPoison.Response{status_code: 200, body: body} ->
+        body
+      %HTTPoison.Response{status_code: 404, request_url: url} ->
+        raise("Source not found: #{url}")
+    end
+  end
+
   def process_request_url(url) do
-    "https://api.github.com/repos/" <> url
+    [_, url_tail] = Regex.run(~r/([^\/]+\/[^\/]+)$/, url)
+    "https://api.github.com/repos/" <> url_tail
   end
 
   def process_request_headers(headers) do
