@@ -20,7 +20,7 @@ defmodule Awatcher.MixProject do
   def application do
     [
       mod: {Awatcher.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :retry]
     ]
   end
 
@@ -46,7 +46,7 @@ defmodule Awatcher.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:httpoison, "~> 1.8"},
-      {:httpoison_retry, "~> 1.0.0"},
+      {:retry, "~> 0.14.1"},
       {:gen_stage, "~> 1.1"},
     ]
   end
