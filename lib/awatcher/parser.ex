@@ -1,4 +1,5 @@
 defmodule Awatcher.Parser do
+  require Logger
   def parse(data) do
     # crop non-related data
     [lib_data, _] = String.split(data, "# Resources")
@@ -23,10 +24,11 @@ defmodule Awatcher.Parser do
 
   def parse_line(line) do
     case Regex.run(~r/\[(.+?)\]\((.+?)\)\s-\s(.+?)$/, line) do
-      [_match, name, full_url, desc] ->
-        [_, parsed_url] = Regex.run(~r/([^\/]+\/[^\/]+)$/, full_url)
-        %{ name: name, url: parsed_url, description: desc }
-      _ -> nil
+      [_match, name, url, desc] ->
+        %{ name: name, url: url, description: desc }
+      _ ->
+        Logger.log(:error, "Failed to parse line: #{line}")
+        nil
     end
   end
 
