@@ -41,7 +41,7 @@ defmodule Awatcher.RecordsTest do
   end
 
   describe "libraries" do
-    alias Awatcher.Records.Library
+    alias Awatcher.Records.{Library, Topic}
     @valid_attrs %{name: "jason", url: "url", description: "A blazing fast JSON parser and generator in pure Elixir"}
     @invalid_attrs %{name: nil, url: nil, description: nil}
 
@@ -49,23 +49,27 @@ defmodule Awatcher.RecordsTest do
       topic = topic_fixture()
       %Library{id: id1} = library_fixture(topic)
       assert [%Library{id: ^id1}] = Records.list_libraries()
-
-      %Library{id: id2} = library_fixture(topic)
-      assert [%Library{id: ^id1}, %Library{id: ^id2}] = Records.list_libraries()
     end
 
-    test "create_library/2 returns the library with given id" do
-      topic = topic_fixture()
-      assert {:ok, %Library{} = library} = Records.create_library(topic, @valid_attrs)
+    test "create_library/1 with valid data and existing topic_id returns the library" do
+      %Topic{id: topic_id} = topic_fixture()
+      attrs = Map.put(@valid_attrs, :topic_id, topic_id)
+      assert {:ok, %Library{} = library} = Records.create_library(attrs)
 
       assert library.name == @valid_attrs.name
       assert library.description == @valid_attrs.description
-      assert library.topic == topic
+      assert library.topic_id == topic_id
     end
 
-    test "create_library/2 with invalid data returns error changeset" do
-      topic = topic_fixture()
-      assert {:error, %Ecto.Changeset{}} = Records.create_library(topic, @invalid_attrs)
+    test "create_library/1 with invalid data returns error changeset" do
+      %Topic{id: topic_id} = topic_fixture()
+      attrs = Map.put(@invalid_attrs, :topic_id, topic_id)
+      assert {:error, %Ecto.Changeset{}} = Records.create_library(attrs)
+    end
+
+    test "create_library/1 with valid data but non-existing topic_id returns error changeset" do
+      attrs = Map.put(@valid_attrs, :topic_id, 999)
+      assert {:error, %Ecto.Changeset{}} = Records.create_library(attrs)
     end
 
     test "update_library/2 with valid data updates the topic" do
@@ -79,10 +83,10 @@ defmodule Awatcher.RecordsTest do
     test "update_library/2 with topic provided updates the association" do
       topic = topic_fixture()
       library = library_fixture(topic)
-      new_topic = topic_fixture()
+      %Topic{id: new_topic_id} = topic_fixture()
 
-      assert {:ok, %Library{} = library} = Records.update_library(library, %{topic: new_topic})
-      assert library.topic == new_topic
+      assert {:ok, %Library{} = library} = Records.update_library(library, %{topic_id: new_topic_id})
+      assert library.topic_id == new_topic_id
     end
 
     test "update_library/2 with invalid data returns error changeset" do
@@ -90,6 +94,14 @@ defmodule Awatcher.RecordsTest do
       library = library_fixture(topic)
 
       assert {:error, %Ecto.Changeset{}} = Records.update_library(library, @invalid_attrs)
+    end
+
+    test "update_library/2 with valid data but non-existing topic_id returns error changeset" do
+      topic = topic_fixture()
+      library = library_fixture(topic)
+
+      attrs = Map.put(@valid_attrs, :topic_id, 999)
+      assert {:error, %Ecto.Changeset{}} = Records.update_library(library, attrs)
     end
   end
 end

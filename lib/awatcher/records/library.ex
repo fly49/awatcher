@@ -8,8 +8,7 @@ defmodule Awatcher.Records.Library do
     field :url, :string
     field :stars, :integer
     field :last_commit, :utc_datetime
-    field :present, :boolean
-    belongs_to :topic, Awatcher.Records.Topic, on_replace: :nilify
+    belongs_to :topic, Awatcher.Records.Topic
 
     timestamps()
   end
@@ -17,8 +16,8 @@ defmodule Awatcher.Records.Library do
   @doc false
   def changeset(library, attrs) do
     library
-    |> cast(attrs, [:name, :url, :description, :stars, :last_commit, :present])
-    |> validate_required([:name, :url, :description])
+    |> cast(attrs, [:name, :url, :description, :stars, :last_commit, :topic_id])
+    |> validate_required([:name, :url, :description, :topic_id])
     |> unique_constraint(:name)
     |> assoc_constraint(:topic)
   end

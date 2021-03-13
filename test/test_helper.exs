@@ -16,15 +16,16 @@ defmodule Awatcher.TestHelpers do
     topic
   end
 
-  def library_fixture(%Records.Topic{} = topic, attrs \\ %{}) do
+  def library_fixture(%Records.Topic{id: topic_id}, attrs \\ %{}) do
     attrs =
       Enum.into(attrs, %{
         name: attrs[:name] || "somelibrary#{System.unique_integer([:positive])}",
         url: attrs[:url] || "http://example.com",
-        description: attrs[:description] || "a description"
+        description: attrs[:description] || "a description",
+        topic_id: topic_id
       })
 
-    {:ok, library} = Records.create_library(topic, attrs)
+    {:ok, library} = Records.create_library(attrs)
     library
   end
 end

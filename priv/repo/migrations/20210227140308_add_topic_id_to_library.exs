@@ -3,7 +3,6 @@ defmodule Awatcher.Repo.Migrations.AddTopicIdToLibrary do
 
   def change do
     alter table(:libraries) do
-      add :present, :boolean, default: true
       add :topic_id, references(:topics)
     end
   end
