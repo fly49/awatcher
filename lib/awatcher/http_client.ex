@@ -4,7 +4,7 @@ defmodule Awatcher.HttpClient do
 
   def get(url) do
     retry with: linear_backoff(500, 2) |> take(3) do
-      HTTPoison.get!(url) |> handle_response()
+      HTTPoison.get!(url, [], follow_redirect: true) |> handle_response()
     after
       response -> response
     else
