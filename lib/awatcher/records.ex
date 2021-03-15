@@ -4,19 +4,15 @@ defmodule Awatcher.Records do
   alias Awatcher.Records.Library
   alias Awatcher.Records.Topic
 
-  def create_library(%Topic{} = topic, attrs) do
+  def create_library(attrs) do
     %Library{}
     |> Library.changeset(attrs)
-    |> Ecto.Changeset.put_assoc(:topic, topic)
-    |> Ecto.Changeset.put_change(:present, attrs[:present] || true)
     |> Repo.insert()
   end
 
   def update_library(%Library{} = library, attrs) do
     library
     |> Library.changeset(attrs)
-    |> Ecto.Changeset.put_assoc(:topic, attrs[:topic])
-    |> Ecto.Changeset.put_change(:present, attrs[:present] || true)
     |> Repo.update()
   end
 

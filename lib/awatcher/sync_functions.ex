@@ -6,7 +6,7 @@ defmodule Awatcher.SyncFunctions do
     Enum.flat_map(list_of_maps, fn map ->
       %{topic: name, topic_desc: description, libraries: lib_list} = map
 
-      %Topic{id: topic_id} = process_topic(name, description, existing_topics)
+      {:ok, %Topic{id: topic_id}} = process_topic(name, description, existing_topics)
 
       Enum.map(lib_list, fn lib -> Map.put(lib, :topic_id, topic_id) end)
     end)
