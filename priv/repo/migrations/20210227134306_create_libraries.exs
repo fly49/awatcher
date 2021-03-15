@@ -5,7 +5,7 @@ defmodule Awatcher.Repo.Migrations.CreateLibraries do
     create table(:libraries) do
       add :name, :string
       add :url, :string
-      add :description, :string
+      add :description, :text
       add :stars, :integer
       add :last_commit, :utc_datetime
 
