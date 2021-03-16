@@ -15,7 +15,8 @@ defmodule Awatcher.Application do
       {Phoenix.PubSub, name: Awatcher.PubSub},
       # Start the Endpoint (http/https)
       AwatcherWeb.Endpoint,
-      {Awatcher.SyncWatcher, :timer.hours(6)}
+      {Awatcher.SyncWatcher, :timer.hours(6)},
+      :hackney_pool.child_spec(:github_pool,  [timeout: 15000, max_connections: 1000])
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

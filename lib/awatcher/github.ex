@@ -11,7 +11,7 @@ defmodule Awatcher.Github do
 
   def fetch_data(url) do
     retry with: linear_backoff(500, 2) |> take(3) do
-      get(url, [], follow_redirect: true) |> handle_response()
+      get(url, [], [follow_redirect: true, pool: :github_pool]) |> handle_response()
     after
       response -> response
     else

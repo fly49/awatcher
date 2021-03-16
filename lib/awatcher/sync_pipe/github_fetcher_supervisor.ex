@@ -4,11 +4,12 @@ defmodule Awatcher.SyncPipe.LibraryMakerSupervisor do
 
   @opts [
     strategy: :one_for_one,
-    subscribe_to: [{DataProvider, max_demand: 4, min_demand: 1}],
+    subscribe_to: [{DataProvider, max_demand: 1000, min_demand: 1}],
     max_restarts: 3,
     max_seconds: 30
   ]
 
+  @spec start_link(any) :: :ignore | {:error, any} | {:ok, pid}
   def start_link(ets_name) do
     ConsumerSupervisor.start_link(__MODULE__, [ets_name], name: __MODULE__)
   end

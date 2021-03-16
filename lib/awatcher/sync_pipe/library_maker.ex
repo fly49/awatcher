@@ -6,9 +6,14 @@ defmodule Awatcher.SyncPipe.LibraryMaker do
   def start_link(ets_name, lib_map) do
     Task.start_link(fn ->
       %{url: url} = lib_map
-      github_data = fetch_github_data(url)
 
-      lib_attrs = Map.merge(lib_map, github_data)
+      lib_attrs =
+        case fetch_github_data(url) do
+          %{pushed_at: last_commit, stargazers_count: stars} ->
+            Map.merge lib_map, %{last_commit: last_commit, stars: stars}
+          %{} ->
+            lib_map
+        end
 
       case process_library(lib_attrs, ets_name) do
         {:ok, _} -> :ok
