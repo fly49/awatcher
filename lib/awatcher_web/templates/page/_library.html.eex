@@ -1,0 +1,6 @@
+<p>
+  <a href="<%= @library.url %>" class="text-success"><%= @library.name %></a>
+  <span><%= stars(@library) %></span>
+  <span><%= last_commit(@library) %></span>
+  <span><%= description(@library) %></span>
+</p>

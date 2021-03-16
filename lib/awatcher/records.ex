@@ -29,7 +29,7 @@ defmodule Awatcher.Records do
   end
 
   def list_topics do
-    Repo.all(Topic)
+    Repo.all(from t in Topic, preload: [:libraries])
   end
 
   def list_libraries do

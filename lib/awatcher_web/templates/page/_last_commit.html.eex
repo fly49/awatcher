@@ -1,0 +1,3 @@
+<button class="button clear icon-only">
+  <sub><%= @date %></sub><img src="https://icongr.am/fontawesome/clock-o.svg?size=16&color=4ed138" alt="last commit">
+</button>

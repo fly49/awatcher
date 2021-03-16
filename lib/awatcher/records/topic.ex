@@ -5,6 +5,7 @@ defmodule Awatcher.Records.Topic do
   schema "topics" do
     field :description, :string
     field :name, :string
+    has_many :libraries, Awatcher.Records.Library
 
     timestamps()
   end
