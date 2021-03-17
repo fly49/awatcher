@@ -11,3 +11,10 @@
 body > .container{
   max-width: 720px;
 }
+
+.starnav {
+  border-bottom: 2px solid var(--color-lightGrey) !important;
+  border: 0px;
+  border-radius: 0 !important;
+  pointer-events: none;
+}
