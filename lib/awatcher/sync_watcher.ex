@@ -1,7 +1,7 @@
 defmodule Awatcher.SyncWatcher do
   use GenServer
   alias Awatcher.{HttpClient, Parser, Records, SyncPipe}
-  import Awatcher.SyncFunctions, only: [assign_topics: 2, process_topic: 3]
+  import Awatcher.SyncFunctions, only: [assign_topics: 2]
 
   @ets_name :libraries
   @ets_opts [:set, :public, :named_table, read_concurrency: true]

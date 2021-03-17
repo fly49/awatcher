@@ -28,7 +28,11 @@ defmodule Awatcher.Records do
     |> Repo.update()
   end
 
-  def list_topics(min_stars \\ nil) do
+  def list_topics() do
+    Repo.all(Topic)
+  end
+
+  def list_topics_with_libraries(min_stars \\ nil) do
     from(t in Topic)
     |> join(:inner, [t], lib in assoc(t, :libraries))
     |> maybe_sort_by_stars(min_stars)
