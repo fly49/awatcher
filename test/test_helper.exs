@@ -29,3 +29,5 @@ defmodule Awatcher.TestHelpers do
     library
   end
 end
+
+Mox.defmock(Awatcher.GithubMock, for: Awatcher.GithubClient)

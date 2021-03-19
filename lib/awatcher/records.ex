@@ -57,7 +57,7 @@ defmodule Awatcher.Records do
   end
 
   def get_library_by(params) do
-    Repo.get_by(Library, params)
+    Repo.get_by!(Library, params)
     |> Repo.preload(:topic)
   end
 end

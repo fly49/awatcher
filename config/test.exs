@@ -20,3 +20,6 @@ config :awatcher, AwatcherWeb.Endpoint,
 
 # Print only warnings and errors during test
 config :logger, level: :warn
+
+# Github mock client
+config :awatcher, :github_client, Awatcher.GithubMock

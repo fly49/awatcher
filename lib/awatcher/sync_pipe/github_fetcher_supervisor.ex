@@ -9,7 +9,6 @@ defmodule Awatcher.SyncPipe.LibraryMakerSupervisor do
     max_seconds: 30
   ]
 
-  @spec start_link(any) :: :ignore | {:error, any} | {:ok, pid}
   def start_link(ets_name) do
     ConsumerSupervisor.start_link(__MODULE__, [ets_name], name: __MODULE__)
   end

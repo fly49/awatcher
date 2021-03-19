@@ -1,4 +1,9 @@
+defmodule Awatcher.GithubClient do
+  @callback fetch_data(String.t()) :: map() | {:error, String.t()}
+end
+
 defmodule Awatcher.Github do
+  @behaviour Awatcher.GithubClient
   use HTTPoison.Base
   use Retry
   require Logger
@@ -10,12 +15,19 @@ defmodule Awatcher.Github do
   )
 
   def fetch_data(url) do
-    retry with: linear_backoff(500, 2) |> take(3) do
-      get(url, [], [follow_redirect: true, pool: :github_pool]) |> handle_response()
-    after
-      response -> response
-    else
-      error -> raise(error)
+    case valid_url?(url) do
+      true ->
+        retry with: linear_backoff(500, 2) |> take(3) do
+          get(url, [], [follow_redirect: true, pool: :github_pool])
+          |> handle_response()
+        after
+          response -> response
+        else
+          error -> raise(error)
+        end
+      false ->
+        Logger.info("Non github url: #{url}")
+        {:error, "Non github url"}
     end
   end
 
@@ -60,5 +72,9 @@ defmodule Awatcher.Github do
       false ->
         val
     end
+  end
+
+  defp valid_url?(url) do
+    Regex.match?(~r/https:\/\/github.com\//, url)
   end
 end
