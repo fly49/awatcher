@@ -1,10 +1,27 @@
-<nav class="tabs is-full">
-  <button class="button clear starnav icon-only">
-    <img src="https://icongr.am/fontawesome/star.svg?size=20&color=4ed138" alt="stars">
-  </button>
-  <a href="/">All</a>
-  <%= for count <- [10,50,100,500,1000] do %>
-    <%= content_tag(:a, "≥ #{count}", href: "/?min_stars=#{count}") %>
-  <% end %>
-</nav>
-<%= render_many @topics, AwatcherWeb.PageView, "_topic.html", conn: @conn, as: :topic %>
+<div class="hero is-full-screen">
+  <div class="logo is-center is-vertical-align">
+    <img src="<%= Routes.static_path(@conn, "/images/logo.svg") %>" alt="logo">
+    <h3>
+      A mirror of Elixir <a href="https://github.com/h4cc/awesome-elixir">awesome list</a>
+    </h3>
+    <a class="sync button outline primary">
+      <img src="https://icongr.am/feather/zap.svg?size=20&color=4ed138" alt="zap">
+      &nbsp;Synchronize
+     </a>
+  </div>
+  <small style="text-align: center">
+    Each library is marked with number of stars and number of days since the last commit.
+  </small>
+  <nav class="tabs is-full">
+    <button class="button clear starnav icon-only">
+      <img src="https://icongr.am/fontawesome/star.svg?size=20&color=4ed138" alt="stars">
+    </button>
+    <a href="/">All</a>
+    <%= for count <- [10,50,100,500,1000] do %>
+      <%= content_tag(:a, "≥ #{count}", href: "/?min_stars=#{count}#list") %>
+    <% end %>
+  </nav>
+</div>
+<section id="list">
+  <%= render_many @topics, AwatcherWeb.PageView, "_topic.html", conn: @conn, as: :topic %>
+</section>
