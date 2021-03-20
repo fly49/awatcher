@@ -19,7 +19,7 @@
     <button class="button clear starnav icon-only">
       <img src="https://icongr.am/fontawesome/star.svg?size=20&color=4ed138" alt="stars">
     </button>
-    <a href="/">All</a>
+    <a href="/#list">All</a>
     <%= for count <- [10,50,100,500,1000] do %>
       <%= content_tag(:a, "≥ #{count}", href: "/?min_stars=#{count}#list") %>
     <% end %>

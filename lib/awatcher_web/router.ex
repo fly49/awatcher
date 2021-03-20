@@ -19,6 +19,11 @@ defmodule AwatcherWeb.Router do
     get "/", PageController, :index
   end
 
+  scope "/", AwatcherWeb do
+    pipe_through :api
+
+    put "/sync", PageController, :sync
+  end
   # Other scopes may use custom stacks.
   # scope "/api", AwatcherWeb do
   #   pipe_through :api

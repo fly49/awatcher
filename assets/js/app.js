@@ -21,6 +21,9 @@ document.getElementById("sync-btn").addEventListener("click", function() {
   this.className = "sync button outline dark"
   this.disabled = true;
   this.style.pointerEvents = "none";
+
+  httpPut("/sync");
+
   countdown(10);
 }); 
 
@@ -42,4 +45,12 @@ window.onload = function() {
         behavior: "smooth"
       });
   }
+}
+
+function httpPut(theUrl)
+{
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "PUT", theUrl, false ); // false for synchronous request
+    xmlHttp.send( null );
+    return xmlHttp.responseText;
 }

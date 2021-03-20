@@ -2,6 +2,10 @@ defmodule AwatcherWeb.PageView do
   alias Awatcher.Records.Library
   use AwatcherWeb, :view
 
+  def render("sync.json", _) do
+    %{response: "ok"}
+  end
+
   def stars(%Library{stars: nil}) do
     ""
   end
