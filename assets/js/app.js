@@ -13,3 +13,33 @@ import "../css/app.scss"
 //     import socket from "./socket"
 //
 import "phoenix_html"
+
+document.getElementById("sync-btn").addEventListener("click", function() {
+  let notice = document.getElementById("sync-notice");
+  notice.style.visibility = "visible";
+  
+  this.className = "sync button outline dark"
+  this.disabled = true;
+  this.style.pointerEvents = "none";
+  countdown(10);
+}); 
+
+function countdown(remaining) {
+  if(remaining === 0){
+    sessionStorage.setItem("reloading", "true");
+    document.location.reload();
+  }
+  document.getElementById('remaining').innerHTML = remaining;
+  setTimeout(function(){ countdown(remaining - 1); }, 1000);
+};
+
+window.onload = function() {
+  var reloading = sessionStorage.getItem("reloading");
+  if (reloading) {
+      sessionStorage.removeItem("reloading");
+      scroll({
+        top: document.getElementById("list").offsetTop,
+        behavior: "smooth"
+      });
+  }
+}

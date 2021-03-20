@@ -24,12 +24,21 @@
   font-weight: 300;
 }
 .sync{
-  margin-top: 2em;
-  color: #4ed138 !important;
-  border-color: #4ed138 !important;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 2em;
+}
+.sync-active{
+  color: #4ed138 !important;
+  border-color: #4ed138 !important;
+}
+.notice{
+  text-align: center;
+  padding: 1em;
+}
+#sync-notice{
+  visibility: hidden;
 }
 
 body > .container{
