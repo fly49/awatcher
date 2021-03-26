@@ -4,8 +4,9 @@ defmodule AwatcherWeb.Router do
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
-    plug :fetch_flash
+    plug :fetch_live_flash
     plug :protect_from_forgery
+    plug :put_root_layout, {AwatcherWeb.LayoutView, :root}
     plug :put_secure_browser_headers
   end
 
@@ -16,7 +17,7 @@ defmodule AwatcherWeb.Router do
   scope "/", AwatcherWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    live "/", PageLive
   end
 
   scope "/", AwatcherWeb do

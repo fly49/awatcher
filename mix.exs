@@ -48,7 +48,8 @@ defmodule Awatcher.MixProject do
       {:httpoison, "~> 1.8"},
       {:retry, "~> 0.14.1"},
       {:gen_stage, "~> 1.1"},
-      {:mox, "~> 1.0", only: :test}
+      {:mox, "~> 1.0", only: :test},
+      {:phoenix_live_view, "~> 0.15.4"}
     ]
   end
 
