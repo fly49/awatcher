@@ -26,6 +26,7 @@ defmodule Awatcher.SyncPipeTest do
     producer_pid = Process.whereis(Awatcher.SyncPipe.DataProvider)
 
     assert :ok == GenServer.call(producer_pid, {:add_events, [lib_attrs]})
+    :timer.sleep(100)
     assert lib = Awatcher.Records.get_library_by(name: "lib")
     assert lib.url == lib_attrs.url
     assert lib.description == lib_attrs.description
