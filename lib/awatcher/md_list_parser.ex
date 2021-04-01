@@ -46,7 +46,6 @@ defmodule Awatcher.MdListParser do
       [_match, name, url, desc] ->
         %{ name: name, url: url, description: desc }
       _ ->
-        Logger.log(:error, "Failed to parse line: #{line}")
         nil
     end
   end

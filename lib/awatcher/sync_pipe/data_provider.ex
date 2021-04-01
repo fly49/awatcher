@@ -10,7 +10,6 @@ defmodule Awatcher.SyncPipe.DataProvider do
   end
 
   def handle_call({:add_events, events}, _from, state) do
-    IO.puts("Events delivered")
     {:reply, :ok, events, state}
   end
 
