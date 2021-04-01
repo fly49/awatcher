@@ -1,6 +1,5 @@
 defmodule AwatcherWeb.DescriptionComponent do
   use AwatcherWeb, :live_component
-  alias Awatcher.Records.Library
 
   def mount(_params, _session, socket) do
     description = format_description(socket.assigns.description)

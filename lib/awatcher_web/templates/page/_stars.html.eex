@@ -1,3 +1,0 @@
-<button class="button clear icon-only">
-  <sub><%= @stars %></sub><img src="https://icongr.am/fontawesome/star.svg?size=15&color=4ed138" alt="stars">
-</button>

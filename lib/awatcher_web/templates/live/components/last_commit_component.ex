@@ -1,6 +1,5 @@
 defmodule AwatcherWeb.LastCommitComponent do
   use AwatcherWeb, :live_component
-  alias Awatcher.Records.Library
 
   def mount(_params, _session, socket) do
     last_commit = format_last_commit(socket.assigns.last_commit)

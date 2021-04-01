@@ -1,6 +1,5 @@
 defmodule AwatcherWeb.StarsComponent do
   use AwatcherWeb, :live_component
-  alias Awatcher.Records.Library
 
   def mount(_params, _session, socket) do
     stars = format_stars(socket.assigns.stars)

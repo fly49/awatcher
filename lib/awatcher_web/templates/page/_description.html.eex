@@ -1,3 +1,0 @@
-—
-&nbsp;
-<%= raw(@description) %>
