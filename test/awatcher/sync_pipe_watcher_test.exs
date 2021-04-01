@@ -1,11 +1,11 @@
-defmodule Awatcher.SyncWatcherTest do
+defmodule Awatcher.SyncPipeWatcherTest do
   use ExUnit.Case, async: true
 
-  test "watcher starts on application initialization and is supervised", context do
+  test "watcher starts on application initialization and is supervised" do
     children = Supervisor.which_children(Awatcher.Supervisor)
 
     assert Enum.find(children, fn proc_tuple ->
-      elem(proc_tuple, 0) == Awatcher.SyncWatcher
+      elem(proc_tuple, 0) == Awatcher.SyncPipe.Watcher
     end)
   end
 
@@ -16,7 +16,7 @@ defmodule Awatcher.SyncWatcherTest do
   test "watcher initializes genstage pipe" do
     producer = Process.whereis(Awatcher.SyncPipe.DataProvider)
     consumer_supervisor = Process.whereis(Awatcher.SyncPipe.LibraryMakerSupervisor)
-    watcher = Process.whereis(Awatcher.SyncWatcher)
+    watcher = Process.whereis(Awatcher.SyncPipe.Watcher)
 
     watcher_links = Process.info(watcher)[:links]
 
@@ -25,6 +25,6 @@ defmodule Awatcher.SyncWatcherTest do
   end
 
   test "schedules next sync on init" do
-    assert is_integer(Awatcher.SyncWatcher.remaining_time)
+    assert is_integer(Awatcher.SyncPipe.Watcher.remaining_time)
   end
 end

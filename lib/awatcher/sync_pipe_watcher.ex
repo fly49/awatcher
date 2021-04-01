@@ -1,4 +1,4 @@
-defmodule Awatcher.SyncWatcher do
+defmodule Awatcher.SyncPipe.Watcher do
   use GenServer
   alias Awatcher.{HttpClient, Parser, Records, SyncPipe}
   import Awatcher.SyncFunctions, only: [assign_topics: 2]

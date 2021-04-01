@@ -7,7 +7,7 @@ defmodule AwatcherWeb.PageController do
   end
 
   def sync(conn, _) do
-    Awatcher.SyncWatcher.start_sync_now()
+    Awatcher.SyncPipe.Watcher.start_sync_now()
     render(conn, "sync.json")
   end
 end
