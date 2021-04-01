@@ -2,7 +2,7 @@ defmodule Awatcher.GithubClient do
   @callback fetch_data(String.t()) :: map() | {:error, String.t()}
 end
 
-defmodule Awatcher.Github do
+defmodule Awatcher.GithubApiClient do
   @behaviour Awatcher.GithubClient
   use HTTPoison.Base
   use Retry

@@ -27,7 +27,7 @@ config :logger, :console,
 config :phoenix, :json_library, Jason
 
 # Default interface for Github interaction
-config :awatcher, :github_client, Awatcher.Github
+config :awatcher, :github_client, Awatcher.GithubApiClient
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
