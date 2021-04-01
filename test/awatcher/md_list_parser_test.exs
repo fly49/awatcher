@@ -1,8 +1,8 @@
-defmodule Awatcher.ParserTest do
+defmodule Awatcher.MdListParserTest do
   use Awatcher.DataCase, async: true
-  alias Awatcher.Parser
+  alias Awatcher.MdListParser
 
-  test "parse_to_groups()" do
+  test "split_by_topics()" do
     data =
     """
     ## Actors
@@ -33,24 +33,10 @@ defmodule Awatcher.ParserTest do
     """
     ]
 
-    assert Parser.parse_to_groups(data) == valid_data
+    assert MdListParser.split_by_topics(data) == valid_data
   end
 
-  describe "parse_line()" do
-    test "detect groups and parse them to map" do
-      data = "* [bpe](https://github.com/spawnproc/bpe) - Business Process Engine in Erlang."
-      valid_data = %{name: "bpe", url: "https://github.com/spawnproc/bpe", description: "Business Process Engine in Erlang."}
-
-      assert Parser.parse_line(data) == valid_data
-    end
-
-    test "return nil if one of the groups can't be detected" do
-      data = "* [bpe] - Business Process Engine in Erlang."
-      assert Parser.parse_line(data) == nil
-    end
-  end
-
-  test "parse_groups()" do
+  test "parse_topic_group()" do
     data =
     """
     Audio and Sounds
@@ -69,6 +55,20 @@ defmodule Awatcher.ParserTest do
         ]
       }
 
-    assert Parser.parse_groups(data) == valid_data
+    assert MdListParser.parse_topic_group(data) == valid_data
+  end
+
+  describe "parse_line()" do
+    test "detect groups and parse them to map" do
+      data = "* [bpe](https://github.com/spawnproc/bpe) - Business Process Engine in Erlang."
+      valid_data = %{name: "bpe", url: "https://github.com/spawnproc/bpe", description: "Business Process Engine in Erlang."}
+
+      assert MdListParser.parse_line(data) == valid_data
+    end
+
+    test "return nil if one of the groups can't be detected" do
+      data = "* [bpe] - Business Process Engine in Erlang."
+      assert MdListParser.parse_line(data) == nil
+    end
   end
 end

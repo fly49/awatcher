@@ -1,6 +1,6 @@
 defmodule Awatcher.SyncPipe.Watcher do
   use GenServer
-  alias Awatcher.{HttpClient, Parser, Records, SyncPipe}
+  alias Awatcher.{HttpClient, MdListParser, Records, SyncPipe}
   import Awatcher.SyncFunctions, only: [assign_topics: 2]
 
   def start_link(interval) do
@@ -56,7 +56,7 @@ defmodule Awatcher.SyncPipe.Watcher do
   def perform_sync(state) do
     data =
       HttpClient.get(@url)
-      |> Parser.parse()
+      |> MdListParser.parse()
       # list_topics() is used for topic create/update checking,
       # avoiding redundant SQL queries
       |> assign_topics(Records.list_topics())
