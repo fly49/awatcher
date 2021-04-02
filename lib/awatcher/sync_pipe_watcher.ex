@@ -1,7 +1,6 @@
 defmodule Awatcher.SyncPipe.Watcher do
   use GenServer
-  alias Awatcher.{HttpClient, MdListParser, Records, SyncPipe}
-  import Awatcher.SyncFunctions, only: [assign_topics: 2]
+  alias Awatcher.{SyncPipe, DataMapper}
 
   def start_link(interval) do
     GenServer.start_link(__MODULE__, interval, name: __MODULE__)
@@ -47,30 +46,12 @@ defmodule Awatcher.SyncPipe.Watcher do
   end
 
   def handle_info(:sync, state) do
-    perform_sync(state)
-    {:noreply, schedule_sync(state)}
-  end
+    data = DataMapper.prepare_data(@ets_name)
 
-  # File is downloaded from raw domain to not bother with base64 decoding
-  @url "https://raw.githubusercontent.com/h4cc/awesome-elixir/master/README.md"
-  def perform_sync(state) do
-    data =
-      HttpClient.get(@url)
-      |> MdListParser.parse()
-      # list_topics() is used for topic create/update checking,
-      # avoiding redundant SQL queries
-      |> assign_topics(Records.list_topics())
-
-    fill_ets(Records.list_libraries)
     # Push data as events to producer
     # Dispatching between stages is started automatically by BrodadcastDispatcher
     :ok = GenServer.call(state.producer, {:add_events, data})
-  end
 
-  defp fill_ets(data) do
-    true = :ets.delete_all_objects(@ets_name)
-    true = :ets.insert(@ets_name,
-      Enum.map(data, fn lib -> {lib.name, lib} end)
-    )
+    {:noreply, schedule_sync(state)}
   end
 end
