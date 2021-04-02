@@ -6,7 +6,6 @@ defmodule Awatcher.GithubApiClient do
   @behaviour Awatcher.GithubClient
   use HTTPoison.Base
   use Retry
-  require Logger
   import Stream
 
   @credentials "Zmx5NDk6NzE3N2QwOWM1MjEwZjkzOWI2NjJiOTYxYTU5MzJiY2I0ZTFiMTEwZA=="
@@ -17,7 +16,7 @@ defmodule Awatcher.GithubApiClient do
   def fetch_data(url) do
     case valid_url?(url) do
       true ->
-        retry with: linear_backoff(500, 2) |> take(3) do
+        retry with: linear_backoff(500, 2) |> take(3), atoms: [nil] do
           get(url, [], [follow_redirect: true, pool: :github_pool])
           |> handle_response()
         after
@@ -26,8 +25,7 @@ defmodule Awatcher.GithubApiClient do
           error -> raise(error)
         end
       false ->
-        Logger.info("Non github url: #{url}")
-        {:error, "Non github url"}
+        {:error, "Non github url: #{url}"}
     end
   end
 
@@ -35,9 +33,12 @@ defmodule Awatcher.GithubApiClient do
     case response do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         body
-      {:ok, %HTTPoison.Response{status_code: 404, request_url: url, body: body}} ->
-        Logger.log(:error, "Source not found: #{url}")
-        body
+      {:ok, %HTTPoison.Response{status_code: 404, request_url: url}} ->
+        {:error, "Source not found: #{url}"}
+      {:ok, %HTTPoison.Response{status_code: status, body: body}} ->
+        {:error, "Unexpected status: #{status} with body: #{body}"}
+      {:error, %HTTPoison.Error{reason: reason}} ->
+        raise(reason)
     end
   end
 

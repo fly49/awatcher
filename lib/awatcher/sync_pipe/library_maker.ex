@@ -14,8 +14,8 @@ defmodule Awatcher.SyncPipe.LibraryMaker do
       case @github_client.fetch_data(url) do
         %{pushed_at: last_commit, stargazers_count: stars} ->
           Map.merge(lib_map, %{last_commit: last_commit, stars: stars})
-        any ->
-          IO.inspect(any)
+        {:error, reason} ->
+          Logger.info(reason)
           lib_map
       end
 
