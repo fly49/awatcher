@@ -4,7 +4,7 @@ defmodule Awatcher.HttpClient do
 
   def get(url) do
     retry with: linear_backoff(500, 2) |> take(3) do
-      HTTPoison.get!(url, [], follow_redirect: true) |> handle_response()
+      HTTPoison.get(url, [], follow_redirect: true) |> handle_response()
     after
       response -> response
     else
@@ -14,10 +14,14 @@ defmodule Awatcher.HttpClient do
 
   def handle_response(response) do
     case response do
-      %HTTPoison.Response{status_code: 200, body: body} ->
+      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         body
-      %HTTPoison.Response{status_code: 404, request_url: url} ->
+      {:ok, %HTTPoison.Response{status_code: 404, request_url: url}} ->
         raise("Source not found: #{url}")
+      {:ok, %HTTPoison.Response{status_code: status, body: body}} ->
+        raise("Unexpected status: #{status} with body: #{body}")
+      {:error, %HTTPoison.Error{reason: reason}} ->
+        raise(reason)
     end
   end
 end
